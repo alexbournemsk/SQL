@@ -1,0 +1,7 @@
+SELECT 
+[s].*, 
+[CourseTimeline].[GetStudentStageString]([ss].[Stage]) as [Stage],
+[CourseTimeline].[GetStudentBranchName]([s].[BranchIds]) as [Branch]
+FROM CourseTimeline.Student as [s]
+INNER JOIN CourseTimeline.StudentStage as [ss] ON [s].[Id] = [ss].[StudentId]
+WHERE BranchIds = '3BE48CB3-6ADB-49DF-8E1D-8D598CB4A3EF'
