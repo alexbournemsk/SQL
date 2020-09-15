@@ -1,0 +1,32 @@
+SELECT
+		s.Id as StudentId,
+		s.FullName,
+		s.PhoneNumber,
+		s.Email,
+		s.CreatedAt,
+		case
+			when ss.Stage = 0 then N'Новый'
+			when ss.Stage = 1 then N'В работе'
+			when ss.Stage = 2 then N'Записан на промо'
+			when ss.Stage = 3 then N'Записан на промо и предупреждён за день'
+			when ss.Stage = 4 then N'Записан на промо и предупреждён за несколько часов'
+			when ss.Stage = 5 then N'Записан на промо, но не пришёл'
+			when ss.Stage = 6 then N'Абонемент оформлен, ожидается оплата'
+			when ss.Stage = 7 then N'Абонемент оформлен и частично оплачен'
+			when ss.Stage = 8 then N'Абонемент полностью оплачен, студент занимается по абонементу'
+			when ss.Stage = 9 then N'Студент отгулял абонемент'
+			when ss.Stage = 10 then N'Студент отказался от обучения'
+		end as StudentStage,
+		b.Name as BranchName,
+		t.CloseComment
+  FROM [CourseTimeline].[Task] as t
+  join [CourseTimeline].[Student] as s on t.CustomerId = s.Id
+  join [CourseTimeline].[StudentStage] as ss on ss.StudentId = s.Id
+  join [CourseTimeline].[Branch] as b on b.Id = t.BranchId
+  where t.ClosedAt is not null
+	and s.CreatedAt between '2020-09-14' and '2020-09-15'
+	--and t.CloseComment like N'%нет инструмента%'   -- тут можно указать любую причину закрытия
+	and t.BranchId in (select Id from [CourseTimeline].[Branch] as b
+/****** Для выбора нужной опции - закоментировать не нужное и расскоментировать нужное с помощью "--"  ******/
+		--where b.Name in (N'Москва-Чистые пруды', N'Москва-Арбат', N'Москва-Цветной бульвар'))
+		where b.Name in (N'Edroom-Eng', N'Онлайн'))
